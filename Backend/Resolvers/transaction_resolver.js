@@ -1,9 +1,10 @@
 import Transaction from '../models/transaction.js';
 import User from '../models/user.js';
+import authMiddleware from '../middleware/authenticated.js';
 
 const transactionResolvers = {
   Query: {
-    transactions: async () => {
+    transactions: async (_,__,context) => {
       try {
         const user =  authMiddleware(context.req, context.res);
         if (!user)
@@ -15,7 +16,7 @@ const transactionResolvers = {
         throw new Error('Failed to fetch transactions');
       }
     },
-    transaction: async (_, { transactionId }) => {
+    transaction: async (_, { transactionId },context) => {
     try {
         const user =  authMiddleware(context.req, context.res);
         if (!user)
@@ -27,7 +28,7 @@ const transactionResolvers = {
         throw new Error('Failed to fetch transaction');
       }
     },
-    categoryStatistics: async () => {
+    categoryStatistics: async (_,__,context) => {
       try {
         return [];
       } catch (error) {
@@ -36,7 +37,7 @@ const transactionResolvers = {
     }
   },
   Mutation: {
-    createTransaction: async (_, { input }) => {
+    createTransaction: async (_, { input },context) => {
       try {
         const user =  authMiddleware(context.req, context.res);
         if (!user)
@@ -49,7 +50,7 @@ const transactionResolvers = {
         throw new Error('Failed to create transaction');
       }
     },
-    updateTransaction: async (_, { input }) => {
+    updateTransaction: async (_, { input },context) => {
       try {
         const user =  authMiddleware(context.req, context.res);
         if (!user)
@@ -67,7 +68,7 @@ const transactionResolvers = {
         throw new Error('Failed to update transaction');
       }
     },
-    deleteTransaction: async (_, { transactionId }) => {
+    deleteTransaction: async (_, { transactionId },context) => {
       try {
         const user =  authMiddleware(context.req, context.res);
         if (!user)

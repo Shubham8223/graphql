@@ -8,8 +8,7 @@ const userResolvers = {
   Query: {
     user: async (_, { userId }, context) => { 
       try {
-        authMiddleware(context.req, context.res);
-        
+        const authuser = authMiddleware(context.req, context.res);
         const user = await User.findById(userId);
         return user;
       } catch (err) {
@@ -19,8 +18,7 @@ const userResolvers = {
     },
     authUser: async (_, __, context) => {
       try {
-        authMiddleware(context.req, context.res); 
-        
+        const authuser = authMiddleware(context.req, context.res);
         const users = await User.find();
         return users;
       } catch (err) {
