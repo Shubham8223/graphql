@@ -5,15 +5,31 @@ import mergedSchema from './Schemas/merge_schema.js';
 import connectToDB from './db.js';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import cors from 'cors'; 
 
 dotenv.config(); 
 
 async function startApolloServer() {
-  const server = new ApolloServer({ typeDefs: mergedSchema, resolvers: mergedResolvers,context: ({ req, res }) => ({ req, res })});
+  const server = new ApolloServer({ 
+    typeDefs: mergedSchema, 
+    resolvers: mergedResolvers,
+    context: ({ req, res }) => ({ req, res }),
+    playground: true 
+  });
   await server.start();
+  
   const app = express();
   app.use(cookieParser());
-  server.applyMiddleware({ app });
+
+  app.use(cors({
+    origin: ['http://localhost:3000', 'https://studio.apollographql.com'],
+    credentials: true
+  }));
+  
+  server.applyMiddleware({ 
+    app,
+    cors: false 
+  });
 
   const PORT = process.env.PORT || 4000;
   await app.listen(PORT);
