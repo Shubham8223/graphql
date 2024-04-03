@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link} from "react-router-dom";
 import { useState } from "react";
 import InputField from "../components/ui//InputField";
 import { LOGIN } from "../graphql/mutation_user";
@@ -11,7 +11,9 @@ const LoginPage = () => {
 		username: "",
 		password: "",
 	});
-    const [login, { loading }] = useMutation(LOGIN);
+    const [login, { loading }] = useMutation(LOGIN, {
+		refetchQueries: ["GetAuthenticatedUser"],
+	});
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;

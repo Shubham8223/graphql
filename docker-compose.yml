@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  # graphql_backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: Dockerfile 
+  #   image: shubham2611/graphql_server:latest
+  #   ports:
+  #     - "4000:4000"
+  #   # depends_on:
+  #   #   db:
+  #   #     condition: service_healthy
+  #   # restart: always
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./backend:/app/backend 
+
+  graphql_frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile 
+    image: shubham2611/graphql_frontend:latest
+    ports:
+      - "3000:3000"
+    # depends_on:
+    #   - graphql_backend
+    # restart: always
+    env_file:
+      - ./frontend/.env
+    volumes:
+      - ./frontend:/app/frontend  

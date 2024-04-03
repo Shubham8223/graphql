@@ -28,13 +28,23 @@ const transactionResolvers = {
         throw new Error('Failed to fetch transaction');
       }
     },
-    categoryStatistics: async (_,__,context) => {
-      try {
-        return [];
-      } catch (error) {
-        throw new Error('Failed to compute category statistics');
-      }
-    }
+    categoryStatistics: async (_, __, context) => {
+			const userId =  authMiddleware(context.req, context.res);
+        if (!userId)
+        {
+            throw new Error('Failed Authentication')
+        }
+			const transactions = await Transaction.find({ userId });
+			const categoryMap = {};
+			transactions.forEach((transaction) => {
+				if (!categoryMap[transaction.category]) {
+					categoryMap[transaction.category] = 0;
+				}
+				categoryMap[transaction.category] += transaction.amount;
+			});
+			return Object.entries(categoryMap).map(([category, totalAmount]) => ({ category, totalAmount }));
+
+		},
   },
   Mutation: {
     createTransaction: async (_, { input },context) => {

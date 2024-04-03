@@ -6,13 +6,7 @@ dotenv.config();
 
 const authMiddleware = (req, res) => {
   try {
-    const authorizationHeader = req.headers['authorization'];
-
-    if (!authorizationHeader) {
-      throw new AuthenticationError('Unauthorized: No authorization header found');
-    }
-
-    const token = authorizationHeader.split(' ')[1];
+    const token = req.cookies['access_token'];
 
     if (!token) {
       throw new AuthenticationError('Unauthorized: Missing token');

@@ -19,7 +19,7 @@ const userResolvers = {
     authUser: async (_, __, context) => {
       try {
         const authuser = authMiddleware(context.req, context.res);
-        const users = await User.find();
+        const users = await User.findById(authuser);
         return users;
       } catch (err) {
         console.error(err);
@@ -54,7 +54,9 @@ const userResolvers = {
 
         context.res.cookie('access_token', token, {
           httpOnly: true,
-          maxAge: 3600000
+          maxAge: 3600000,
+          sameSite: 'None', 
+          secure: true
         });
         console.log(token)
         return user;
@@ -65,8 +67,7 @@ const userResolvers = {
     } ,
     logout: async (_, __, context) => {
       try {
-        authMiddleware(context.req, context.res);
-
+        authMiddleware(context.req, context.res);  
         context.res.clearCookie('access_token');
         return { message: 'Logged out successfully' };
       } catch (error) {
