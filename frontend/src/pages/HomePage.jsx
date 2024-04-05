@@ -16,15 +16,9 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 const HomePage = () => {
   const navigate = useNavigate();
   const { data } = useQuery(GET_TRANSACTION_STATISTICS);
-  const { data: authUserData } = useQuery(GET_AUTHENTICATED_USER);
+  const { data: authUserData, loading: authLoading } = useQuery(GET_AUTHENTICATED_USER);
 
-  const [logout,{loading}] = useMutation(LOGOUT, {
-    refetchQueries: [{ query: GET_AUTHENTICATED_USER }],
-    onCompleted: () => {
-      toast.success("Logout Successful");
-      navigate("/");
-    },
-  });
+  const [logout, { loading: logoutLoading }] = useMutation(LOGOUT);
 
   const [chartData, setChartData] = useState({
     labels: [],
@@ -45,9 +39,7 @@ const HomePage = () => {
   useEffect(() => {
     if (data?.categoryStatistics) {
       const categories = data.categoryStatistics.map((stat) => stat.category);
-      const totalAmounts = data.categoryStatistics.map(
-        (stat) => stat.totalAmount
-      );
+      const totalAmounts = data.categoryStatistics.map((stat) => stat.totalAmount);
 
       const backgroundColors = [];
       const borderColors = [];
@@ -82,42 +74,48 @@ const HomePage = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      toast.success("Logout successful");
+      navigate("/login");
     } catch (error) {
       console.error("Error logging out:", error);
       toast.error(error.message);
     }
   };
 
+  if (!authUserData && !authLoading) {
+    navigate("/login");
+    return null; 
+  }
+
   return (
     <>
       <div className="flex flex-col gap-6 items-center max-w-7xl mx-auto z-20 relative justify-center">
-        <div className="flex items-center">
-          <p className="md:text-4xl text-2xl lg:text-4xl font-bold text-center relative z-50 mb-4 mr-4 bg-gradient-to-r from-pink-600 via-indigo-500 to-pink-400 inline-block text-transparent bg-clip-text">
+        <div className="w-full mb-4 flex items-center justify-between">
+          <p className="md:text-4xl text-2xl lg:text-4xl font-bold text-center relative z-50 bg-gradient-to-r from-pink-600 via-indigo-500 to-pink-400 inline-block text-transparent bg-clip-text">
             Spend wisely, track wisely
           </p>
-          <img
-            src={authUserData?.authUser.profilePicture}
-            className="w-11 h-11 rounded-full border cursor-pointer"
-            alt="Avatar"
-          />
-          {!loading && (
-            <MdLogout
-              className="mx-2 w-5 h-5 cursor-pointer"
-              onClick={handleLogout}
-            />
-          )}
-          {/* loading spinner */}
-          {loading && (
-            <div className="w-6 h-6 border-t-2 border-b-2 mx-2 rounded-full animate-spin"></div>
-          )}
+          <div className="flex items-center gap-2">
+            {/* <img
+              src={"images.jpeg"}
+              className="w-11 h-11 rounded-full border cursor-pointer"
+              alt="Avatar"
+            /> */}
+            {!logoutLoading ? (
+              <MdLogout
+                className="w-5 h-5 cursor-pointer"
+                onClick={handleLogout}
+              />
+            ) : (
+              <div className="w-6 h-6 border-t-2 border-b-2 rounded-full animate-spin"></div>
+            )}
+          </div>
         </div>
         <div className="flex flex-wrap w-full justify-center items-center gap-6">
           {data?.categoryStatistics.length > 0 && (
-            <div className="h-[330px] w-[330px] md:h-[360px] md:w-[360px]  ">
+            <div className="h-[330px] w-[330px] md:h-[360px] md:w-[360px]">
               <Doughnut data={chartData} />
             </div>
           )}
-
           <TransactionForm />
         </div>
         <Cards />

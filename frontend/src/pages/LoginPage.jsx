@@ -5,8 +5,10 @@ import InputField from "../components/ui//InputField";
 import { LOGIN } from "../graphql/mutation_user";
 import { useMutation } from "@apollo/client";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
+	const navigate = useNavigate();
 	const [loginData, setLoginData] = useState({
 		username: "",
 		password: "",
@@ -32,6 +34,7 @@ const LoginPage = () => {
                 },
             });
             toast.success("Login Successful");
+			navigate("/dashboard");
         } catch (error) {
             console.error("Error:", error);
             toast.error(error.message);

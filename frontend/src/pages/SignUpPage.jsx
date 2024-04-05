@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
 import RadioButton from "../components/ui/RadioButton";
 import InputField from "../components/ui/InputField";
@@ -6,6 +5,7 @@ import { useMutation } from "@apollo/client";
 import { SIGN_UP } from "../graphql/mutation_user";
 import toast from "react-hot-toast";
 import React from 'react'
+import { useState } from "react";
 
 const SignUpPage = () => {
 	const [signUpData, setSignUpData] = useState({
