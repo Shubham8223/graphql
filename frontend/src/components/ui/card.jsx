@@ -23,7 +23,7 @@ const Card = ({ transaction, authUser }) => {
 	const [deleteTransaction, { loading }] = useMutation(DELETE_TRANSACTION, {
 		refetchQueries: ["GetTransactions", "GetTransactionStatistics"],
 	});
-
+	console.log(authUser?._id);
 	description = description[0]?.toUpperCase() + description.slice(1);
 	category = category[0]?.toUpperCase() + category.slice(1);
 	paymentType = paymentType[0]?.toUpperCase() + paymentType.slice(1);
@@ -71,7 +71,6 @@ const Card = ({ transaction, authUser }) => {
 				</p>
 				<div className='flex justify-between items-center'>
 					<p className='text-xs text-black font-bold'>{formattedDate}</p>
-					<img src={authUser?.profilePicture} className='h-8 w-8 border rounded-full' alt='' />
 				</div>
 			</div>
 		</div>
